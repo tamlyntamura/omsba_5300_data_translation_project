@@ -1,0 +1,40 @@
+---
+title: "data_translation_project"
+author: "Tamlyn Tamura"
+date: "2/21/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+Loading libraries
+Ctrl + Alt + I for new code chunks
+
+```{r libraries, include=FALSE}
+library(tidyverse)
+library(jtools)
+library(car)
+library(vtable)
+library(purrr)
+```
+
+Read in data
+
+```{r data, include = FALSE}
+id_name_link <- read_csv("Lab3_Rawdata/id_name_link.csv")
+
+Most_Recent_Cohorts_Scorecard_Elements_ <- read_csv("Lab3_Rawdata/Most+Recent+Cohorts+(Scorecard+Elements).csv")
+
+trends_up_to <- read_csv(map_df(list.files(pattern = "trend_up_to"))
+
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+
+```{r}
+
+```
+
