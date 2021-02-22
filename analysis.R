@@ -11,3 +11,5 @@ college_id <- separate(college_id, schname, into = 'college', sep = '-')
 college_id <- college_id[!duplicated(college_id$'college'), ]
 # Separated college from cities then removed duplicate names of
 
+college_id <- filter(college_id, PREDDEG == '3')
+# Filter to only show colleges with that predominantly grant bachelor's degrees
