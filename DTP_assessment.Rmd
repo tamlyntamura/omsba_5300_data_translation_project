@@ -28,17 +28,14 @@ id_name_link <- read_csv("Lab3_Rawdata/id_name_link.csv")
 
 Most_Recent_Cohorts_Scorecard_Elements_ <- read_csv("Lab3_Rawdata/Most+Recent+Cohorts+(Scorecard+Elements).csv")
 
-
-#### This needs to be fixed ####
-#trends_up_to <- read_csv(map_df(list.files(pattern = "trend_up_to"))
-
+trends <- list.files(path = 'Lab3_Rawdata', pattern = 'trends_up_to', full.names = TRUE) %>%
+  map_dfr(read_csv)
 ```
 
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+This is where I take unstructured data and try to make it a bit easier to read. I linked 'unitid' and 'opeid' to create a unique key, in case it became more organized this way down the line. 
 
 ```{r data wranging, include = FALSE}
 id_name_link <- id_name_link %>% distinct(schname, .keep_all = TRUE)
-
 id_name_link <- id_name_link %>% unite(key, c('unitid', 'opeid'), sep = '_')
 
 
@@ -48,15 +45,15 @@ Most_Recent_Cohorts_Scorecard_Elements_ <- Most_Recent_Cohorts_Scorecard_Element
 
 college_id <- left_join(id_name_link, Most_Recent_Cohorts_Scorecard_Elements_)
 college_id <- separate(college_id, schname, into = 'college', sep = '-')
-college_id <- college_id[!duplicated(college_id$'college')]
-# Separated college from cities then removed colleges with same names
-
-
-college_id <- filter(college_id, PREDDEG == '3')
-# Filter to only show colleges with that predominantly grant bachelor's degrees
+college_id <- college_id[!duplicated(college_id$'college'),] # Separated college from cities then removed colleges with same names
+college_id <- filter(college_id, PREDDEG == '3') # Filter to only show colleges that predominantly grant bachelor's degrees
 
 
 college_id_condensed <- select(college_id, c('key', 'college', 'INSTNM', 'STABBR', 'PREDDEG', 'md_earn_wne_p10-REPORTED-EARNINGS'))
 
+
+college_trends <- full_join(college_id_condensed, trends)
+
 ```
+
 
