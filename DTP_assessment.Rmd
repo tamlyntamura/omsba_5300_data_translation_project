@@ -49,15 +49,68 @@ college_id <- college_id[!duplicated(college_id$'college'),] # Separated college
 college_id <- filter(college_id, PREDDEG == '3') # Filter to only show colleges that predominantly grant bachelor's degrees
 
 
-college_id_condensed <- select(college_id, c('key', 'college', 'INSTNM', 'STABBR', 'PREDDEG', 'md_earn_wne_p10-REPORTED-EARNINGS'))
+college_id_condensed <- select(college_id, c('key', 'college', 'INSTNM', 'STABBR', 'PREDDEG', 'md_earn_wne_p10-REPORTED-EARNINGS', 'LOCALE'))
 
 
 college_trends <- full_join(college_id_condensed, trends) %>%
   group_by(college, .add = FALSE) %>%
   subset(monthorweek > "2015-08-23 - 2015-08-29") # Filter out data that's from before September 2015, before College Scorecard was released
 
+```
 
+Create new data sets separated by LOCALE type--typically urbanized/city areas have a higher market rate than rural and suburban/town areas. 
+
+I was hesitant on whether or not I should include Rural Fringe, Rural Distant, and Rural Remote (41, 42, 43), since there aren't many colleges that would be in these areas, but this actually accounted for 6448 observations, so I decided to keep it in.
+
+
+```{r separate data sets, include = FALSE}
+
+# Urban data frame
+urban_df <- filter(college_trends, LOCALE == 11 & 12 & 13)
+urban_df$`md_earn_wne_p10-REPORTED-EARNINGS` <- as.numeric(as.character(urban_df$`md_earn_wne_p10-REPORTED-EARNINGS`))
+summary(urban_df)
+
+
+# Suburban data frame
+suburban_df <- filter(college_trends, LOCALE == 21 & 22 & 23)
+suburban_df$`md_earn_wne_p10-REPORTED-EARNINGS` <- as.numeric(as.character(suburban_df$`md_earn_wne_p10-REPORTED-EARNINGS`))
+summary(suburban_df)
+
+# Town data frame
+town_df <- filter(college_trends, LOCALE == 31 & 32 & 33)
+town_df$`md_earn_wne_p10-REPORTED-EARNINGS` <- as.numeric(as.character(town_df$`md_earn_wne_p10-REPORTED-EARNINGS`))
+summary(town_df)
+
+# Rural data frame
+rural_df <- filter(college_trends, LOCALE == 41 & 42 & 43)
+rural_df$`md_earn_wne_p10-REPORTED-EARNINGS`<- as.numeric(as.character(rural_df$`md_earn_wne_p10-REPORTED-EARNINGS`))
+summary(rural_df)
 
 ```
 
+Urban min: 19800
+Urban median: 46600
+Urban mean: 47318
+Urban max: 121500
+
+Suburban min: 17600
+Suburban median: 43900
+Suburban mean: 45017
+Suburban max: 166200
+
+Town min: 28900
+Town median: 39900
+Town mean: 41275
+Town max: 68500
+
+Rural min: 21300
+Rural median: 37800
+Rural mean: 37375
+Rural max: 59000
+
+Despite a couple of outliers, it was expected that the more urbanized your surrounding is, the higher the median salary of someone 10 years out of college (1. Urban, 2. Suburban, 3. Town, 4. Rural)
+
+```{r}
+
+```
 
