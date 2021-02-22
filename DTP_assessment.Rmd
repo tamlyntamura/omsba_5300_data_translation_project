@@ -52,7 +52,11 @@ college_id <- filter(college_id, PREDDEG == '3') # Filter to only show colleges 
 college_id_condensed <- select(college_id, c('key', 'college', 'INSTNM', 'STABBR', 'PREDDEG', 'md_earn_wne_p10-REPORTED-EARNINGS'))
 
 
-college_trends <- full_join(college_id_condensed, trends)
+college_trends <- full_join(college_id_condensed, trends) %>%
+  group_by(college, .add = FALSE) %>%
+  subset(monthorweek > "2015-08-23 - 2015-08-29") # Filter out data that's from before September 2015, before College Scorecard was released
+
+
 
 ```
 
