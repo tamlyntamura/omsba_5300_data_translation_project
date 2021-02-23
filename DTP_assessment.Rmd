@@ -19,6 +19,7 @@ library(jtools)
 library(car)
 library(vtable)
 library(purrr)
+library(ggplot2)
 ```
 
 Read in data
@@ -124,13 +125,35 @@ Comparing these results to the median of total colleges across the board, I get 
 # Realized md_earn_wne_pt10-REPORTED-EARNINGS was causing me problems while running my regressions due to the -
 # Went back and renamed the variable for my 5 data frames (urban_df, suburban_df, town_df, rural_df, locale_df)
 locale_df <- rename(college_trends, median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
-urban_df <- rename(urban_df, median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
-suburban_df <- rename(suburban_df, median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
-town_df <- rename(town_df, median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
-rural_df <- rename(rural_df, median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
+urban_df <- rename(urban_df, urban_median_salary = median_salary)
+suburban_df <- rename(suburban_df, suburban_median_salary = median_salary)
+town_df <- rename(town_df, town_median_salary = median_salary)
+rural_df <- rename(rural_df, rural_median_salary = median_salary)
 
 
-locale_reg <- lm(college_trends$index ~ college_trends$md_earn_wne_p10-REPORTED-EARNINGS, data = college_trends)
+locale_reg <- lm(index ~ median_salary, data = locale_df)
+summary(locale_reg)
+
+##############
+locale <- ggplot(data = locale_reg, aes(x = median_salary, y = index), binwidth = 30 + geom_line()+geom_point())
+
+print(locale)
+#############
+
+urban_reg <- lm(index ~ median_salary, data = urban_df)
+summary(urban_reg)
+
+suburban_reg <- lm(index ~ median_salary, data = suburban_df)
+summary(suburban_reg)
+
+rural_reg <- lm(index ~ median_salary, data = rural_df)
+summary(rural_reg)
+```
+
+
+
+```{r}
 
 ```
+
 
