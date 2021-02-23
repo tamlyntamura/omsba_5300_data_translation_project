@@ -153,11 +153,13 @@ When I ran the regressions separately, I noticed that all the intercepts produce
 
 When I ran the regression for all index on all locales, I got the median salary to be significant at the .001 level. What was interesting is that my Adjusted R^2 is ~.002, which means that this model doesn't tell us very much about the variation in the data, which is fair since it's very, very rare to make the conclusion that one variable that will drive the search popularity, or index.
 
-Since the salary coefficients for urban and suburban locales were statistically significant at the 99.9% level, then it's safe to say that among colleges that predominantly grant bachelor's degrees, higher-earning colleges result in more student interest. Given the negative median salaries coefficient for colleges in rural areas, we can say we are 99% confident that among colleges that predominantly grant bachelor's degrees, lower-earning colleges and student interest have a negative relationship. We don't have statistical significance to prove whether or not colleges in towns are linked to higher or lower student interest.
+Since the salary coefficients for urban and suburban locales were statistically significant at the 99.9% level, then it's safe to say that among colleges that predominantly grant bachelor's degrees, higher-earning colleges result in more student interest. Given the negative coefficient for median salaries for colleges in rural areas, we can say we are 99% confident that among the colleges that predominantly grant bachelor's degrees, lower-earning colleges and student interest have a negative relationship; meaning that lower-earning colleges are linked to less student interest. Additionally, we don't have statistical significance to prove whether or not colleges in towns are linked to higher or lower student interest.
 
+Below I used ggplot to determine if my data is normally distributed. As you can see, it looks like there are some problems in my data given the shape. One possibility could be some of the outliers, since my data ranged from as low as 17,600 USD to 166,200 USD. Another possibility is that this is not a linear relationship, and I should have used a log-linear, linear-log or log-log model to display this relationship.
 
 ```{r}
-
+g <- ggplot(locale_reg, aes(x=median_salary)) + geom_density()
+print(g)
 
 ```
 
