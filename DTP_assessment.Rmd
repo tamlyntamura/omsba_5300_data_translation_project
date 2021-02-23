@@ -68,25 +68,25 @@ I was hesitant on whether or not I should include Rural Fringe, Rural Distant, a
 
 
 college_trends$`md_earn_wne_p10-REPORTED-EARNINGS` <- as.numeric(as.character(college_trends$`md_earn_wne_p10-REPORTED-EARNINGS`))
-summary(college_trends)
+summary(college_trends) # This should change characters to numeric
 
 # Urban data frame
-urban_df <- filter(college_trends, LOCALE == 11 & 12 & 13)
+urban_df <- filter(college_trends, LOCALE == 11 & 12 & 13, na.rm = TRUE)
 summary(urban_df)
 
 
 # Suburban data frame
-suburban_df <- filter(college_trends, LOCALE == 21 & 22 & 23)
+suburban_df <- filter(college_trends, LOCALE == 21 & 22 & 23, na.rm = TRUE)
 summary(suburban_df)
 
 
 # Town data frame
-town_df <- filter(college_trends, LOCALE == 31 & 32 & 33)
+town_df <- filter(college_trends, LOCALE == 31 & 32 & 33, na.rm = TRUE)
 summary(town_df)
 
 
 # Rural data frame
-rural_df <- filter(college_trends, LOCALE == 41 & 42 & 43)
+rural_df <- filter(college_trends, LOCALE == 41 & 42 & 43, na.rm = TRUE)
 summary(rural_df)
 
 
@@ -119,8 +119,10 @@ Urban environments mean there are more people, more infrastructure, more busines
 
 Comparing these results to the median of total colleges across the board, I get a median 42300 USD and a mean of 43904 USD. These numbers are not too far off from the suburban mean and median, which is too be expected since there are significantly more colleges that predominantly grant bachelor's degrees (more observations) in the urban and suburban areas, as opposed to in town and rural areas.
 
+Since market rates in more populated areas are higher than less populated areas, I will be defining high-earning colleges as colleges located in urban and suburban areas, while low-earning colleges will be those located in town and rural areas.
 
-```{r is it time for regressions?, include = FALSE}
+
+```{r analysis, include = FALSE}
 
 # Realized md_earn_wne_pt10-REPORTED-EARNINGS was causing me problems while running my regressions due to the -
 # Went back and renamed the variable for my 5 data frames (urban_df, suburban_df, town_df, rural_df, locale_df)
@@ -134,25 +136,28 @@ rural_df <- rename(rural_df, rural_median_salary = median_salary)
 locale_reg <- lm(index ~ median_salary, data = locale_df)
 summary(locale_reg)
 
-##############
-locale <- ggplot(data = locale_reg, aes(x = median_salary, y = index), binwidth = 30 + geom_line()+geom_point())
-
-print(locale)
-#############
-
-urban_reg <- lm(index ~ median_salary, data = urban_df)
+urban_reg <- lm(index ~ urban_median_salary, data = urban_df)
 summary(urban_reg)
 
-suburban_reg <- lm(index ~ median_salary, data = suburban_df)
+suburban_reg <- lm(index ~ suburban_median_salary, data = suburban_df)
 summary(suburban_reg)
 
-rural_reg <- lm(index ~ median_salary, data = rural_df)
+town_reg <- lm(index ~ town_median_salary, data = town_df)
+summary(town_reg)
+
+rural_reg <- lm(index ~ rural_median_salary, data = rural_df)
 summary(rural_reg)
 ```
 
+When I ran the regressions separately, I noticed that all the intercepts produced statistically significant numbers, except for in the town data frame. The rural data frame produced a median salary coefficient that was significant at the .01 level. The urban and suburban areas produced median salary coefficients significant at the .001 significance level.
+
+When I ran the regression for all index on all locales, I got the median salary to be significant at the .001 level. What was interesting is that my Adjusted R^2 is ~.002, which means that this model doesn't tell us very much about the variation in the data, which is fair since it's very, very rare to make the conclusion that one variable that will drive the search popularity, or index.
+
+Since the salary coefficients for urban and suburban locales were statistically significant at the 99.9% level, then it's safe to say that among colleges that predominantly grant bachelor's degrees, higher-earning colleges result in more student interest. Given the negative median salaries coefficient for colleges in rural areas, we can say we are 99% confident that among colleges that predominantly grant bachelor's degrees, lower-earning colleges and student interest have a negative relationship. We don't have statistical significance to prove whether or not colleges in towns are linked to higher or lower student interest.
 
 
 ```{r}
+
 
 ```
 
