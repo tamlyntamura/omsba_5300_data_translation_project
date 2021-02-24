@@ -7,7 +7,7 @@ output: html_document
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
-knitr::opts_knit$set(root.dir = '~/Desktop/School/MSBA/Stats 1 for Business Analytcs (R)/omsba_5112/omsba_5300_data_translation_project/Lab3_rawdata')
+knitr::opts_knit$set(root.dir = '~/Desktop/School/MSBA/Stats 1 for Business Analytcs (R)/omsba_5112/omsba_5300_data_translation_project/')
 getwd()
 ```
 
@@ -16,7 +16,7 @@ Loading libraries
 Ctrl + Alt + I for new code chunks
 
 ```{r, include=FALSE}
-knitr::opts_knit$set(root.dir = '../Lab3_rawdata')
+
 getwd()
 library(tidyverse)
 library(jtools)
@@ -29,22 +29,23 @@ library(ggplot2)
 Read in data
 
 ```{r, include = FALSE}
-knitr::opts_knit$set(root.dir = './Code/DTP_assessment.Rmd')
+
 getwd()
 
-id_name_link <- read_csv("id_name_link.csv")
+id_name_link <- read_csv("Lab3_rawdata/id_name_link.csv")
 
-Most_Recent_Cohorts_Scorecard_Elements_ <- read_csv("Most+Recent+Cohorts+(Scorecard+Elements).csv")
+Most_Recent_Cohorts_Scorecard_Elements_ <- read_csv("Lab3_rawdata/Most+Recent+Cohorts+(Scorecard+Elements).csv")
 
 trends <- list.files(path = 'Lab3_Rawdata', pattern = 'trends_up_to', full.names = TRUE) %>%
   map_dfr(read_csv)
+
+trends <- rename(trends, college = schname)
+
 ```
 
 This is where I take unstructured data and try to make it a bit easier to read. I linked 'unitid' and 'opeid' to create a unique key, in case it became more organized this way down the line. 
 
 ```{r, include = FALSE}
-knitr::opts_knit$set(root.dir = '../Code/DTP_assessment.Rmd')
-getwd()
 
 id_name_link <- id_name_link %>% distinct(schname, .keep_all = TRUE)
 id_name_link <- id_name_link %>% unite(key, c('unitid', 'opeid'), sep = '_')
@@ -75,8 +76,6 @@ I was hesitant on whether or not I should include Rural Fringe, Rural Distant, a
 
 
 ```{r, include = FALSE}
-knitr::opts_knit$set(root.dir = '../Code/DTP_assessment.Rmd')
-getwd()
 
 college_trends$`md_earn_wne_p10-REPORTED-EARNINGS` <- as.numeric(as.character(college_trends$`md_earn_wne_p10-REPORTED-EARNINGS`))
 summary(college_trends) # This should change characters to numeric
@@ -138,10 +137,10 @@ Since market rates in more populated areas are higher than less populated areas,
 # Realized md_earn_wne_pt10-REPORTED-EARNINGS was causing me problems while running my regressions due to the -
 # Went back and renamed the variable for my 5 data frames (urban_df, suburban_df, town_df, rural_df, locale_df)
 locale_df <- rename(college_trends, median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
-urban_df <- rename(urban_df, urban_median_salary = median_salary)
-suburban_df <- rename(suburban_df, suburban_median_salary = median_salary)
-town_df <- rename(town_df, town_median_salary = median_salary)
-rural_df <- rename(rural_df, rural_median_salary = median_salary)
+urban_df <- rename(urban_df, urban_median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
+suburban_df <- rename(suburban_df, suburban_median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
+town_df <- rename(town_df, town_median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
+rural_df <- rename(rural_df, rural_median_salary = 'md_earn_wne_p10-REPORTED-EARNINGS')
 
 
 locale_reg <- lm(index ~ median_salary, data = locale_df)
